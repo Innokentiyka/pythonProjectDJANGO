@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'название_вашей_базы_данных',
+        'NAME': 'Catalog',
         'USER': 'Lequrs',
         'PASSWORD': 'kerik00989',
         'HOST': 'localhost',
