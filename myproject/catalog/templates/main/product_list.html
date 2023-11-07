@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Список продуктов</h2>
+  <a href="{% url 'product_create' %}">Добавить новый продукт</a>
+  <ul>
+    {% for product in products %}
+      <li>
+        {{ product.name }} - {{ product.price }} руб.
+        <a href="{% url 'product_update' product.id %}">Редактировать</a>
+        <a href="{% url 'product_delete' product.id %}">Удалить</a>
+      </li>
+    {% empty %}
+      <li>Нет продуктов.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+<ul>
+  {% for product in products %}
+    <li>
+      {{ product.name }} - {{ product.price }} руб.
+      {% if product.current_version %}
+        - Активная версия: {{ product.current_version.version_title }}
+      {% endif %}
+      <!-- ... остальная часть кода ... -->
+    </li>
+  {% endfor %}
+</ul>
