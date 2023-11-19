@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.db import models
 from django.conf import settings
 from myproject.catalog import models
 from myproject.catalog.forms import ProductForm
