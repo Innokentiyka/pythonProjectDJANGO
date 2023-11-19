@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-
+from django.db import models
+from django.conf import settings
 from myproject.catalog import models
 from myproject.catalog.forms import ProductForm
 
@@ -35,6 +36,17 @@ class CustomUser(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class Product(models.Model):
+
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    category = models.CharField(max_length=255)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+
+    is_published = models.BooleanField(default=False)
 
 @login_required
 def product_create(request):

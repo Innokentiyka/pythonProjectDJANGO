@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-   <html>
-   <head>
-       <title>Product List</title>
-   </head>
-   <body>
-       <h2>Product List</h2>
-       <ul>
-           {% for product in products %}
-               <li>{{ product.name }} - {{ product.description }}</li>
-           {% endfor %}
-       </ul>
-   </body>
-   </html>
+<html>
+<head>
+    <title>Product List</title>
+</head>
+<body>
+    <h2>Product List</h2>
+    <ul>
+        {% for product in products %}
+        <li>
+            <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+            - {{ product.category }}
+            {% if product.is_published %}
+            <span>[Published]</span>
+            {% else %}
+            <span>[Draft]</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

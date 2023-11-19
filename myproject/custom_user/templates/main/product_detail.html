@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.description }}</p>
+    <p>Category: {{ product.category }}</p>
+    <p>Status: {{ product.is_published|yesno:"Published,Draft" }}</p>
+    <!-- Ссылка на редактирование для владельцев и модераторов -->
+    {% if request.user == product.user or request.user.groups.filter(name='Модераторы').exists %}
+    <a href="{% url 'edit_product' product.id %}">Edit</a>
+    {% endif %}
+</body>
+</html>

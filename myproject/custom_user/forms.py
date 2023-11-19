@@ -1,6 +1,7 @@
-from django import forms
-from .models import CustomUser
 
+from .models import CustomUser
+from django import forms
+from .models import Product
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -16,3 +17,26 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Passwords don\'t match.')
         return cd['password2']
 
+
+class ProductEditForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'category', 'is_published']
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'category', 'is_published']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'category': forms.TextInput(attrs={'class': 'form-control'}),
+            # Для BooleanField, вы можете использовать CheckboxInput, если хотите представить его как чекбокс
+            'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        labels = {
+            'name': 'Product Name',
+            'description': 'Product Description',
+            'category': 'Product Category',
+            'is_published': 'Publish Product',
+        }
