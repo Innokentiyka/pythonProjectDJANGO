@@ -1,20 +1,25 @@
-from django.contrib.auth.views import LoginView
-from django.urls import path
 from . import views
+from .views import clients_list
+from django.urls import path
+from .views import register, activate
+
 
 urlpatterns = [
-    path('login/', LoginView.as_view(), name='login'),
+    path('clients/', clients_list, name='clients_list'),
 
-    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    path('clients/', views.clients_list, name='clients_list'),
 
-    path('products/', views.product_list, name='product_list'),
+    # Путь к странице добавления нового клиента
+    path('clients/add/', views.add_client, name='add_client'),
 
+    # Путь к странице редактирования клиента
+    path('clients/edit/<int:id>/', views.edit_client, name='edit_client'),
 
-    path('product/<int:pk>/', views.product_detail, name='product_detail'),
+    # Путь к странице деталей рассылки
+    path('newsletter/<int:id>/', views.newsletter_detail, name='newsletter_detail'),
+    path('register/', register, name='register'),
 
-
-    path('product/edit/<int:pk>/', views.edit_product, name='edit_product'),
-
-
-    path('product/change-status/<int:pk>/', views.change_product_status, name='change_product_status'),
+    path('activate/<uidb64>/<token>/', activate, name='activate'),
 ]
+
+

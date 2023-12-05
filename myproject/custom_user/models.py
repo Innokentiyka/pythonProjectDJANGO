@@ -1,61 +1,61 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.conf import settings
-from myproject.catalog import models
-from myproject.catalog.forms import ProductForm
+from django.db import models
+from django.shortcuts import render
+from .models import Client
+from django.contrib.auth.models import AbstractUser
 
 
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+class Client(models.Model):
+    email = models.EmailField()
+    full_name = models.CharField(max_length=100)
+    comment = models.TextField()
 
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, password, **extra_fields)
+class Newsletter(models.Model):
+    START_TIME_CHOICES = [
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+    ]
 
+    STATUS_CHOICES = [
+        ('completed', 'Completed'),
+        ('created', 'Created'),
+        ('running', 'Running'),
+    ]
 
-class CustomUser(AbstractBaseUser):
-    email = models.EmailField(unique=True)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    phone_number = models.CharField(max_length=20, null=True, blank=True)
-    country = models.CharField(max_length=100, null=True, blank=True)
+    start_time = models.DateTimeField()
+    frequency = models.CharField(max_length=10, choices=START_TIME_CHOICES)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
 
-    objects = CustomUserManager()
+class Message(models.Model):
+    subject = models.CharField(max_length=100)
+    body = models.TextField()
+    newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+class Log(models.Model):
+    newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=100)
+    response = models.TextField()
 
-    def __str__(self):
-        return self.email
+def clients_list(request):
+    clients = Client.objects.all()
+    return render(request, 'clients_list.html', {'clients': clients})
 
+class EmailLog(models.Model):
+    # Ссылка на конкретное сообщение, если это уместно
+    message = models.ForeignKey('Message', on_delete=models.CASCADE, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    recipient_email = models.EmailField()  # Email получателя
+    status = models.CharField(max_length=100)  # Например, 'Успешно', 'Ошибка'
+    response = models.TextField(blank=True, null=True)  # Ответ от сервера или описание ошибки
 
-class Product(models.Model):
+    def str(self):
+        return f"{self.recipient_email} - {self.status} - {self.timestamp}"
 
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    category = models.CharField(max_length=255)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
-
-    is_published = models.BooleanField(default=False)
-
-@login_required
-def product_create(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.user = request.user
-            product.save()
-            return redirect('product_list')
-    else:
-        form = ProductForm()
-    return render(request, 'product/create.html', {'form': form})
+class CustomUser(AbstractUser):
+    # Дополнительные поля для пользователя
+    # Например, для подтверждения почты
+    email_confirmed = models.BooleanField(default=False)

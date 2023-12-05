@@ -1,23 +1,24 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import Client, Newsletter, Message, Log
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-    list_display = ['email', 'phone_number', 'country', 'is_staff', 'is_active']
-    list_filter = ['email', 'is_staff', 'is_active']
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
-        ('Personal', {'fields': ('phone_number', 'country', 'avatar')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
-        ),
-    )
-    search_fields = ('email',)
-    ordering = ('email',)
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ['email', 'full_name', 'comment']
+    search_fields = ['email', 'full_name']
 
-admin.site.register(CustomUser, CustomUserAdmin)
+@admin.register(Newsletter)
+class NewsletterAdmin(admin.ModelAdmin):
+    list_display = ['start_time', 'frequency', 'status']
+    list_filter = ['frequency', 'status']
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ['subject', 'newsletter']
+    list_filter = ['newsletter']
+    search_fields = ['subject']
+
+@admin.register(Log)
+class LogAdmin(admin.ModelAdmin):
+    list_display = ['newsletter', 'timestamp', 'status']
+    list_filter = ['status']
+    search_fields = ['newsletter__start_time']
