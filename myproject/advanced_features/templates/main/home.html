@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to Our Mailing Service</h1>
+<div class="stats">
+    <h2>Statistics</h2>
+    <p>Total mailings: {{ stats.total_mailings }}</p>
+    <p>Active mailings: {{ stats.active_mailings }}</p>
+    <p>Unique clients: {{ stats.unique_clients }}</p>
+</div>
+
+<div class="blog-posts">
+    <h2>Latest Blog Posts</h2>
+    {% for post in posts %}
+        <div>
+            <h3>{{ post.title }}</h3>
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100px; height: auto;">
+            <p>{{ post.content|truncatewords:30 }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -39,10 +39,34 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_crontab'
-    'custom_user',
+    'django_crontab',
+    'crispy_forms',
+    'advanced_features',
 
 ]
+
+CRONJOBS = [
+    ('0 9 * * *', 'mailings.management.commands.send_mailings.Command', '>> /path/to/logfile.log')
+]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/django_errors.log',
+        },
+    },
+    'loggers': {
+        'your_app_name': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -140,3 +164,19 @@ EMAIL_HOST_USER = 'kerik006@mail.ru@gmail.com'
 EMAIL_HOST_PASSWORD = '123123'
 
 AUTH_USER_MODEL = 'your_app_name.CustomUser'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+AUTH_USER_MODEL = 'advanced_features.CustomUser'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'your_email@gmail.com'
+EMAIL_HOST_PASSWORD = 'your_password'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
