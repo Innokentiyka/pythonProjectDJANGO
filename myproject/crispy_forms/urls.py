@@ -16,4 +16,5 @@ urlpatterns = [
     path('mailings/add/', mailing_create, name='mailing_create'),
     path('mailings/<int:pk>/edit/', mailing_edit, name='mailing_edit'),
     path('mailings/<int:pk>/delete/', mailing_delete, name='mailing_delete'),
+
 ]

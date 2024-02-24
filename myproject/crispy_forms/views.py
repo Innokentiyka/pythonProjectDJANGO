@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Client, Mailing
 from .forms import ClientForm, MailingForm
 
+
 # Клиенты
 def client_list(request):
     clients = Client.objects.all()
@@ -63,4 +64,28 @@ def mailing_delete(request, pk):
     mailing = get_object_or_404(Mailing, pk=pk)
     mailing.delete()
     return redirect('mailing_list')
+
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
+
+def send_newsletter_email(user_email):
+    subject = "Welcome to Our Newsletter"
+    content = "Here is the body of your email..."
+    unsubscribe_link = "http://example.com/unsubscribe"
+
+    message = render_to_string('email_template.html', {
+        'subject': subject,
+        'content': content,
+        'unsubscribe_link': unsubscribe_link,
+    })
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [user_email],
+        fail_silently=False,
+        html_message=message,  # Указываем, что сообщение в формате HTML
+    )
 
