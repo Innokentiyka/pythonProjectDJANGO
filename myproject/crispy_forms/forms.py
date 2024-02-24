@@ -24,3 +24,8 @@ class MailingForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Save'))
         self.fields['clients'].queryset = Client.objects.all()
         self.fields['clients'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true'})
+
+
+
+class MyForm(forms.Form):
+    name = forms.CharField(label='Your name', max_length=100)
